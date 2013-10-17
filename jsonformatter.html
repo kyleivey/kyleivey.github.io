@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
-		<title>Simple JavaScript JSON Formatter</title>
+		<title>Simple JavaScript JSON Formatting Tool</title>
         
         <link rel="stylesheet" href="stylesheets/jsonformatter.css">
         <link rel="stylesheet" href="stylesheets/buttons.css">
@@ -9,49 +9,61 @@
         <script src="javascripts/objectsorter.js"></script> 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
         
-        <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
-        <script src="http://codemirror.net/lib/codemirror.js"></script> 
-        <script src="http://codemirror.net/mode/javascript/javascript.js"></script> 
-        <script src="http://codemirror.net/addon/edit/matchbrackets.js"></script> 
+        <link rel="stylesheet" href="stylesheets/codemirror.css">
+        <link rel="stylesheet" href="stylesheets/codetheme.css">
+        <script type="text/javascript" src="javascripts/codemirror/codemirror.js"></script> 
+        <script type="text/javascript" src="javascripts/codemirror/placeholder.js"></script>
+        <script type="text/javascript" src="javascripts/codemirror/javascript.js"></script> 
+        <script type="text/javascript" src="javascripts/codemirror/matchbrackets.js"></script> 
         
         <script type="text/javascript">
             var DISABLE_AUTOLOAD_CHARACTER_COUNT = 400000;
+            var INDENT_AMOUNT = 4;
         
             var editor;
+            var autoFormat = false;
             var parsedJson;
             
             $(document).ready(function() {
             
-                $("#jsonTextArea").bind('paste', function(e) {
-                    if ($("#jsonTextArea").val() == "") {
-                        setTimeout(function () {
-                            loadJson();
-                            formatJson(true);
-                          }, 0.5);
+                editor = CodeMirror.fromTextArea(document.getElementById("jsonTextArea"), {
+                    matchBrackets: true,
+                    mode: "application/json",
+                    theme: "mytheme",
+                    indentUnit: INDENT_AMOUNT,
+                    electricChars: false
+                });
+                          
+                editor.on('change', function(instance, change) {; 
+                    if (autoFormat) {
+                        autoFormat = false;
+                        loadJson();
+                        formatJson();
+                        
+                    } else {
+                        autoLoad();
                     }
                 });
                 
-                $("#jsonTextArea").keyup(function() {
-                    autoLoad();
+                editor.on('beforeChange', function(instance, change) {
+                    if (change.origin == "paste" && editor.getValue().length == 0) {
+                        autoFormat = true;
+                    }
                 });
-                
-                $("#jsonTextArea").change(function() {
-                    autoLoad();
-                });
-                
+
                 $("#formatButton").click(function() {
                     loadJson();
                     formatJson();
                 });
                 
                 $("#clearButton").click(function() {
-                    $("#jsonTextArea").val("");
+                    editor.setValue("");
                     enableWarning(false);
                 });
             });
             
             function autoLoad() {
-                if ($("#jsonTextArea").val().length < DISABLE_AUTOLOAD_CHARACTER_COUNT) { 
+                if (editor.getValue().length < DISABLE_AUTOLOAD_CHARACTER_COUNT) { 
                     loadJson();
                     
                 } else {
@@ -63,11 +75,11 @@
                 parsedJson = null;
                 
                 try {
-                    parsedJson = jQuery.parseJSON($("#jsonTextArea").val());
+                    parsedJson = jQuery.parseJSON(editor.getValue());
                 } catch (err) {
                 }
                 
-                if (parsedJson || $("#jsonTextArea").val().length == 0) {
+                if (parsedJson || editor.getValue().length == 0) {
                     enableWarning(false);
                     
                 } else {
@@ -84,13 +96,7 @@
                     parsedJson = sortObject(parsedJson);
                 }
                 
-                $("#jsonTextArea").val(JSON.stringify(parsedJson, null, 4));
-                
-                editor = CodeMirror.fromTextArea($("#jsonTextArea"), {
-                    matchBrackets: true,
-                    lineNumbers: true,
-                    mode: "application/json"
-                });
+                editor.setValue(JSON.stringify(parsedJson, null, INDENT_AMOUNT));
             }
             
             function enableWarning(enable) {
@@ -113,7 +119,6 @@
        <div id="container">
             <div id="content">
                 <textarea id="jsonTextArea" placeholder="JSON goes here." spellcheck="false"></textarea>
-                <div id="error">Invalid JSON</div>
             </div>
         </div>
         
@@ -121,7 +126,7 @@
             <h1>Simple JSON Formatting Tool</h1>
             
             <div id="controls">
-                <a id="formatButton" class="button is-primary" style="margin-right:2px; width: 112px">Format Now</a>
+                <a id="formatButton" class="button is-primary" style="margin-right:3px; width: 112px">Format Now</a>
                 <a id="clearButton" class="button is-danger">Clear</a>
             </div>
         </div>
