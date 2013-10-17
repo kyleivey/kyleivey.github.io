@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>Simple JavaScript JSON Formatter</title>
+        
+        <link rel="stylesheet" href="stylesheets/jsonformatter.css">
+        <link rel="stylesheet" href="stylesheets/buttons.css">
+        
+        <script src="javascripts/objectsorter.js"></script> 
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
+        
+        <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+        <script src="http://codemirror.net/lib/codemirror.js"></script> 
+        <script src="http://codemirror.net/mode/javascript/javascript.js"></script> 
+        <script src="http://codemirror.net/addon/edit/matchbrackets.js"></script> 
+        
+        <script type="text/javascript">
+            var DISABLE_AUTOLOAD_CHARACTER_COUNT = 400000;
+        
+            var editor;
+            var parsedJson;
+            
+            $(document).ready(function() {
+            
+                $("#jsonTextArea").bind('paste', function(e) {
+                    if ($("#jsonTextArea").val() == "") {
+                        setTimeout(function () {
+                            loadJson();
+                            formatJson(true);
+                          }, 0.5);
+                    }
+                });
+                
+                $("#jsonTextArea").keyup(function() {
+                    autoLoad();
+                });
+                
+                $("#jsonTextArea").change(function() {
+                    autoLoad();
+                });
+                
+                $("#formatButton").click(function() {
+                    loadJson();
+                    formatJson();
+                });
+                
+                $("#clearButton").click(function() {
+                    $("#jsonTextArea").val("");
+                    enableWarning(false);
+                });
+            });
+            
+            function autoLoad() {
+                if ($("#jsonTextArea").val().length < DISABLE_AUTOLOAD_CHARACTER_COUNT) { 
+                    loadJson();
+                    
+                } else {
+                    enableWarning(false);
+                }
+            }
+            
+            function loadJson() {
+                parsedJson = null;
+                
+                try {
+                    parsedJson = jQuery.parseJSON($("#jsonTextArea").val());
+                } catch (err) {
+                }
+                
+                if (parsedJson || $("#jsonTextArea").val().length == 0) {
+                    enableWarning(false);
+                    
+                } else {
+                    enableWarning(true);
+                }
+            }
+
+            function formatJson(enableSorting) {
+                if (parsedJson == null) {
+                    return;
+                }
+                
+                if (enableSorting == true) {
+                    parsedJson = sortObject(parsedJson);
+                }
+                
+                $("#jsonTextArea").val(JSON.stringify(parsedJson, null, 4));
+                
+                editor = CodeMirror.fromTextArea($("#jsonTextArea"), {
+                    matchBrackets: true,
+                    lineNumbers: true,
+                    mode: "application/json"
+                });
+            }
+            
+            function enableWarning(enable) {
+                if (enable == true) {
+                    $("#formatButton").removeClass('is-primary');
+                    //$("#formatButton").addClass('is-warning');
+                    $("#formatButton").html("Invalid JSON");
+                    
+                } else {
+                    $("#formatButton").addClass('is-primary');
+                    //$("#formatButton").removeClass('is-warning');
+                    $("#formatButton").html("Format Now");
+                }
+            }
+
+        </script>
+	</head>
+    
+	<body>
+       <div id="container">
+            <div id="content">
+                <textarea id="jsonTextArea" placeholder="JSON goes here." spellcheck="false"></textarea>
+                <div id="error">Invalid JSON</div>
+            </div>
+        </div>
+        
+        <div id="header">
+            <h1>Simple JSON Formatting Tool</h1>
+            
+            <div id="controls">
+                <a id="formatButton" class="button is-primary" style="margin-right:2px; width: 112px">Format</a>
+                <a id="clearButton" class="button is-danger">Clear</a>
+            </div>
+        </div>
+ 
+	</body>
+</html>
