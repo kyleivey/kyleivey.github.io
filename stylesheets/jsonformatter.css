@@ -1,0 +1,79 @@
+html {
+    height: 100%;
+    background: #f9f9f9; 
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: sans-serif;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+div#container {
+    position:relative; /* needed for footer positioning*/
+    margin:0 auto; /* center, not in IE5 */
+    width:100%;
+    
+    height:auto !important; /* real browsers */
+    min-height:100%; /* real browsers */
+}
+
+div#header {
+    position:absolute;
+    height: 80px;
+    width: 100%;
+    top:0;
+    background:#323A3F;
+}
+
+h1 {
+    font-size:32px;
+    color: #fff;
+    margin-left: 10px;
+    display: inline;
+    line-height:80px;
+    font-weight: bold;
+}
+
+#controls {
+    position: absolute;
+    top:50%;
+    right:0;
+    margin-right: 10px;
+    margin-top: -18px;
+}
+
+div#content {
+    position: absolute;
+    height: auto;
+    width: auto;
+    top: 100px;
+    bottom: 20px;
+    left:0;
+    right:0;
+    margin-left:10px;
+    margin-right:10px;
+}
+
+#jsonTextArea {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    
+    border: 1px solid #ccc; 
+    border-radius:4px;
+    color: #000; 
+    font-size: 13px; 
+    overflow: auto;
+    background: #FFF;
+    box-sizing: border-box;
+    padding:10px;
+    margin: auto;
+    
+    min-width: 500px;
+}
