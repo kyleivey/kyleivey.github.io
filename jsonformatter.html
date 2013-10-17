@@ -22,6 +22,8 @@
         
             var editor;
             var autoFormat = false;
+            var warningEnabled = false;
+            
             var parsedJson;
             
             $(document).ready(function() {
@@ -46,8 +48,14 @@
                 });
                 
                 editor.on('beforeChange', function(instance, change) {
-                    if (change.origin == "paste" && editor.getValue().length == 0) {
-                        autoFormat = true;
+                    if (change.origin == "paste"){                       
+                        if (change.from.ch == 0 
+                            && change.from.line == 0
+                            && editor.lastLine() == change.to.line
+                            && editor.getLine(editor.lastLine()).length == change.to.ch) {
+                            
+                            autoFormat = true;
+                        }
                     }
                 });
 
@@ -97,19 +105,36 @@
                 }
                 
                 editor.setValue(JSON.stringify(parsedJson, null, INDENT_AMOUNT));
+                showSuccess();
+            }
+            
+            function showSuccess() {
+                resetFormatButton();
+                $("#formatButton").addClass("is-success");
+                $("#formatButton").html("good");
+                
+                setTimeout(function() {
+                    enableWarning(warningEnabled);
+                }, 2300);
             }
             
             function enableWarning(enable) {
+                warningEnabled = enable;
+                resetFormatButton();
+                
                 if (enable == true) {
-                    $("#formatButton").removeClass('is-primary');
-                    //$("#formatButton").addClass('is-warning');
                     $("#formatButton").html("Invalid JSON");
                     
                 } else {
                     $("#formatButton").addClass('is-primary');
-                    //$("#formatButton").removeClass('is-warning');
                     $("#formatButton").html("Format Now");
                 }
+            }
+            
+            function resetFormatButton() {
+                $("#formatButton").removeClass('is-primary');
+                $("#formatButton").removeClass('is-warning');
+                $("#formatButton").removeClass("is-success");
             }
 
         </script>
