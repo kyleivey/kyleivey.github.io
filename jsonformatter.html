@@ -40,7 +40,7 @@
                     if (autoFormat) {
                         autoFormat = false;
                         loadJson();
-                        formatJson();
+                        formatJson(true);
                         
                     } else {
                         autoLoad();
@@ -61,7 +61,7 @@
 
                 $("#formatButton").click(function() {
                     loadJson();
-                    formatJson();
+                    formatJson(true);
                 });
                 
                 $("#clearButton").click(function() {
