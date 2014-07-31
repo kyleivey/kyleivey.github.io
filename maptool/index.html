@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<title>Simple JavaScript Map Tool</title>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
+		<link rel="stylesheet" href="css/kanso.css">
+
+		<script type="text/javascript" src= "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false&language=en"></script>
+
+		<script type="text/javascript" >   
+			google.maps.visualRefresh = true;
+
+			function getInputCoordinates() {
+				var value=$('#input-coordinates').val();
+				if (value) value=value.replace(/\r\n/g,'\n').replace(/\n\r/g,'\n').replace(/\r/g,'\n');
+				
+				return $.trim(value);
+			}
+			
+			var renderMarker, renderMarkers, clearMarkers, togglePolyline, renderPolyline, toggleBounds, renderBounds, addButtonClick;
+			var posFromLatlng, showPolyline=false, showBounds=false;
+			
+			$(document).ready(function() {
+				var bounds=new google.maps.LatLngBounds();
+				var markers=[];
+
+				var mapMain = new google.maps.Map(document.getElementById('map-canvas'), {
+					center: new google.maps.LatLng(50.452258,-104.61113),
+					zoom: 5,
+					mapTypeId: google.maps.MapTypeId.ROADMAP,
+					mapTypeControl: true,
+					noClear:true,
+					panControl:true,
+					zoomControl:true,
+					scaleControl:true,
+					scaleControlOptions:{position:google.maps.ControlPosition.BOTTOM_RIGHT},
+					streetViewControl: false,
+				});
+
+				google.maps.event.addListener(mapMain, 'click', function(event) {
+					$("#select-coordinates").text(event.latLng.toUrlValue());
+					$("#select-coordinates").fadeOut(140).fadeIn(1);
+
+					$("#select-coordinates-add").focus();
+
+					clickMarker.setMap(mapMain);
+					clickMarker.setPosition(event.latLng);
+				});
+
+				var polyline = new google.maps.Polyline({
+					path: [],
+					geodesic: false,
+					strokeColor: '#FF0000',
+					strokeOpacity: 1.0,
+					strokeWeight: 2
+				});
+
+				var rectangle = new google.maps.Rectangle({
+						strokeColor: '#FF0000',
+						strokeOpacity: 0.8,
+						strokeWeight: 2,
+						fillColor: '#FF0000',
+						fillOpacity: 0.35,
+					});
+
+				var clickMarker = new google.maps.Marker({
+						icon: "https://chart.googleapis.com/chart?chst=d_simple_text_icon_below&chld=|16|000|glyphish_map-marker|16|F11|000"
+				});
+				
+				function finalizeRenderMarkers () {
+					var count=markers.length;
+
+					if (count > 1) {
+						mapMain.fitBounds(bounds);
+					}
+					else if (count == 1) {
+						mapMain.setCenter(markers[0].getPosition());
+					}
+
+					clickMarker.setMap(null);
+				};
+				
+				clearMarkers = function () {
+					var l=markers.length;
+					for(var i=0;i<l;i++)
+						markers[i].setMap(null);
+					
+					bounds = new google.maps.LatLngBounds();
+
+					markers = [];
+
+					polyline.setPath([])
+					rectangle.setBounds(bounds);
+				};
+
+				togglePolyline = function() {
+					showPolyline = !showPolyline;
+
+					if (showPolyline) {
+						$("#togglePolyline").val("Disable Polyline");
+					} else {
+						$("#togglePolyline").val("Enable Polyline");
+					}
+
+					renderPolyline();
+				}
+
+				renderPolyline = function() {
+					if (showPolyline) {
+						polyline.setMap(mapMain);
+					} else {
+						polyline.setMap(null);
+					}
+				}
+
+				toggleBounds = function() {
+					showBounds = !showBounds;
+
+					if (showBounds) {
+						$("#toggleBounds").val("Disable Bounds");
+					} else {
+						$("#toggleBounds").val("Enable Bounds");
+					}
+
+
+					renderBounds();
+				}
+
+				renderBounds = function() {
+					if (showBounds) {
+						rectangle.setMap(mapMain);
+					} else {
+						rectangle.setMap(null);
+					}
+				}
+				
+				posFromLatlng = function (latlng) {
+					var temp=latlng.split(',');
+					if (temp.length!=2 || isNaN(temp[0]) || isNaN(temp[1])) {temp=latlng.split('\t');}
+					if (temp.length!=2 || isNaN(temp[0]) || isNaN(temp[1])) {temp=latlng.split(' ');}
+					if (temp.length!=2 || isNaN(temp[0]) || isNaN(temp[1])) return false;
+					
+					var lat=parseFloat(temp[0]);
+					var lng=parseFloat(temp[1]);
+					return new google.maps.LatLng(lat,lng);
+				};
+				
+				renderMarker = function (latlng) {
+					var position = posFromLatlng(latlng);
+					if (!position) {if (callback) callback();return;}
+					bounds.extend(position);
+					
+					var marker = new google.maps.Marker({
+						position: position,
+						icon: "https://chart.googleapis.com/chart?chst=d_map_spin&chld=1.0|0|FF0000|13|b|" + markers.length,
+						map: mapMain,
+						title: markers.length + ": " + latlng
+					});
+					
+					markers.push(marker);
+
+					polyline.getPath().push(position);
+
+					rectangle.setBounds(bounds);
+				};
+				
+				renderMarkers = function () {
+					clearMarkers();
+					var coords=getInputCoordinates();
+					if (coords=='') return;
+					
+					coords=coords.split('\n');
+					var i=0,l=coords.length,rendered=0;
+					
+					for (i=0; i < l; i++) {
+						renderMarker(coords[i]);
+					}
+
+					finalizeRenderMarkers();
+				};
+				
+				addButtonClick = function () {
+					var newLine = $("#select-coordinates").text();
+					var oldText = $("#input-coordinates").val().trim();
+
+					if (posFromLatlng(newLine) != false) {
+						if (oldText.length > 0) {
+							newLine = "\n" + newLine;
+						}
+
+						$("#input-coordinates").focus();
+						$("#input-coordinates").val("").val(oldText + newLine);
+
+						$("#input-coordinates").scrollTop($("#input-coordinates")[0].scrollHeight);
+
+						renderMarkers();
+					}
+				};
+				
+				renderMarkers();
+			});
+
+		</script>
+
+		<style type="text/css" >
+			html {
+				margin:0;
+				padding:0;
+				border:0;
+				width:100%;
+				height:100%;
+			}
+			
+			body {
+				margin:0;
+				padding:0;
+				border:0;
+				width:100%;
+				height:100%;
+			}
+			
+			fieldset {
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+			.main-content {
+				width:100%;
+				height:100%;
+			}
+			
+			#map-container {
+				width:100%;
+				height:100%;
+			}
+			
+			#map-canvas {
+				width:100%;
+				height:100%;
+			}
+			
+			#input-coordinates-container {
+				position:absolute;
+				right:15px;
+				bottom:25px;
+				background-color: #f5f7fa;
+				border-color: #656d78;
+				border-width: 1px;
+				border-style: solid;
+				border-radius: 2px;
+
+			}
+			
+			#input-coordinates {
+				display: block;
+				height: 100px;
+				width: 255px;
+				padding: 3px;
+				font-size: 0.9em;
+				font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+			}
+			
+			#input-coordinates.selected{
+				
+			}
+
+			#select-coordinates-container {
+				background-color: #F00;
+				position: relative;
+			}
+
+			#select-coordinates {
+				padding: 0px 0px 0px 6px;
+				font-size: 0.85em;
+				line-height: 30px;
+				height: 30px;
+				font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+				float: left;
+			}
+
+			#select-coordinates-add {
+				float: right; 
+				height: 30px;
+				padding: 3px 8px 3px 8px;
+				font-size: 0.8em;
+				border-radius: 0px;
+				border-width: 0px;
+			}
+
+			.control-button {
+				padding: 5px; 
+				width: 100% !important;
+				border-radius: 0px;
+				border-width: 0px;
+			}
+		</style>
+	</head>
+	<body>
+	
+	
+	
+		<div class="main-content">
+			<div id="map-container">
+				<div id="map-canvas"></div>
+			</div>
+
+			<div id="input-coordinates-container" style="padding: 0px">
+
+				<div id="select-coordinates-container">
+					<div id="select-coordinates">Enter Coordinates</div>
+					<button id="select-coordinates-add" class="button is-default" tabindex=1 onclick="addButtonClick (); return false;">Add</button>
+				</div>
+
+				<textarea id="input-coordinates" placeholder="50.452258,-104.61113" tabindex=2 style="border-width: 0px" class="selected" wrap=off></textarea>
+
+				<input type="button" class="button is-primary control-button" tabindex=3 value="Plot Now" id="regenerate" onclick="renderMarkers (); return false;"><br>
+
+				<div>
+					<input type="button" class="button is-default control-button" tabindex=4 value="Enable Polyline" id="togglePolyline" onclick="togglePolyline (); return false;"><br>
+					<input type="button" class="button is-default control-button" tabindex=5 value="Enable Bounds" id="toggleBounds" onclick="toggleBounds (); return false;"><br>
+				</div>
+			</div>
+
+		</div>
+	</body>
+</html>
