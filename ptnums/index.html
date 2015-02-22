@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Portuguese Numbers</title>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+		<style>
+			/* http://meyerweb.com/eric/tools/css/reset/ 
+			   v2.0 | 20110126
+			   License: none (public domain)
+			*/
+
+			html, body, div, span, applet, object, iframe,
+			h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+			a, abbr, acronym, address, big, cite, code,
+			del, dfn, em, img, ins, kbd, q, s, samp,
+			small, strike, strong, sub, sup, tt, var,
+			b, u, i, center,
+			dl, dt, dd, ol, ul, li,
+			fieldset, form, label, legend,
+			table, caption, tbody, tfoot, thead, tr, th, td,
+			article, aside, canvas, details, embed, 
+			figure, figcaption, footer, header, hgroup, 
+			menu, nav, output, ruby, section, summary,
+			time, mark, audio, video {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				font-size: 100%;
+				font: inherit;
+				vertical-align: baseline;
+			}
+			/* HTML5 display-role reset for older browsers */
+			article, aside, details, figcaption, figure, 
+			footer, header, hgroup, menu, nav, section {
+				display: block;
+			}
+			body {
+				line-height: 1;
+			}
+			ol, ul {
+				list-style: none;
+			}
+			blockquote, q {
+				quotes: none;
+			}
+			blockquote:before, blockquote:after,
+			q:before, q:after {
+				content: '';
+				content: none;
+			}
+			table {
+				border-collapse: collapse;
+				border-spacing: 0;
+			}
+
+			input[type="number"]::-webkit-outer-spin-button,
+			input[type="number"]::-webkit-inner-spin-button {
+			    -webkit-appearance: none;
+			    margin: 0;
+			}
+			input[type="number"] {
+			    -moz-appearance: textfield;
+			}
+
+			/* style here */
+
+			body {
+				background-color: #232323;
+			}
+
+			#display-area {
+				width: 100%;
+				padding-top: 90px;
+				padding-bottom: 5px;
+			}
+
+			#display-text {
+				text-align: center;
+				display:block;
+			}
+
+			.text1 {
+				color: #fff;
+				padding-bottom: 55px;
+				letter-spacing: 1px;
+				font: 75px "Open Sans","open-sanslight",Trebuchet MS,Helvetica,Arial,sans-serif;
+			}
+
+			#translate-text {
+				width: 100%;
+				color: #fff;
+				padding-bottom: 10px;
+				text-align: center;
+				color: #81b441;
+				font: 30px "Open Sans","open-sanslight",Trebuchet MS,Helvetica,Arial,sans-serif;
+			}
+
+			#input-area {
+				width: 300px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			#form1 {
+
+			}
+
+			#input1 {
+				text-align: center; 
+				width: 100%;
+				padding: 10px;
+				color: #232323;
+				background-color: #eee;
+				border: 0px;
+				font: 60px "Open Sans","open-sanslight",Trebuchet MS,Helvetica,Arial,sans-serif;
+			}
+
+
+		</style>
+
+		<script type="text/javascript">
+
+			var stone = {
+				0: "zero",
+				1: "um",
+				2: "dois",
+				3: "três",
+				4: "quatro",
+				5: "cinco",
+				6: "seis",
+				7: "sete",
+				8: "oito",
+				9: "nove",
+				10: "dez",
+				11: "onze",
+				12: "doze",
+				13: "treze",
+				14: "quatorze",
+				15: "quinze",
+				16: "dezesseis",
+				17: "dezessete",
+				18: "dezoito",
+				19: "dezenove",
+				20: "vinte",
+				21: "vinte",
+				22: "vinte",
+				30: "trinta",
+				40: "quarenta",
+				50: "cinquenta",
+				60: "sessenta",
+				70: "setenta",
+				80: "oitenta",
+				90: "noventa",
+				100: "cem"  
+			}
+
+			var currentNumber = 0;
+			var currentText = "";
+
+			var convert = function(num) {
+				if (num >= 10 && num <= 19) {
+					return stone[num];
+				}
+
+				out = "";
+
+				if (num % 100 > 10) {
+					p = (num % 100) - (num % 10);
+					out = out + stone[p];
+				}
+
+				if (num % 10 > 0) {
+					if (out != "") out = out + " e ";
+
+					p = num % 10;
+					out = out + stone[p];
+				}
+
+				return out;
+			}
+
+			var speak = function(text) {
+				$("#audio")[0].src = "http://translate.google.com/translate_tts?tl=pt-br&q=" + text;
+				$("#audio")[0].play();
+			}
+
+			var loadRandomNumber = function() {
+				currentNumber = Math.floor((Math.random() * 400) + 0);
+				if (currentNumber > 100) {
+					currentNumber = Math.floor(20 * (currentNumber / 400));
+				}
+
+				currentText = convert(currentNumber);
+				$("#display-text").html(currentText);
+				speak(currentText);
+			}
+
+			var validate = function() {
+				inputNum = parseInt($("#input1").val());
+				if (inputNum == currentNumber) {
+					$("#audio-correct")[0].play();
+				} else {
+					$("#audio-wrong")[0].play();
+					alert(currentText + " is " + currentNumber);
+				}
+			}
+
+			var init = function() {
+				$("#input1").val("");
+				loadRandomNumber();
+			}
+
+			$(document).ready(function() {
+				init();
+
+				$("#display-text").click(function() {
+					speak(currentText);
+				});
+
+				$("#form1").submit(function() {
+					validate();
+					$("#input1").val("");
+					loadRandomNumber();
+				});
+			});
+		</script>
+
+		<audio id="audio" type="audio/mpeg"></audio>
+		<audio id="audio-correct" src="ding.ogg" type="audio/ogg"></audio>
+		<audio id="audio-wrong" src="wrong.ogg" type="audio/ogg"></audio>
+	</head>
+
+	<body>
+		<div id="display-area">
+			<span id="display-text" class="text1">cinquenta e quatro</span>
+		</div>
+
+		<div id="translate-text">Enter Translation</div>
+
+		<div id="input-area">
+			<form id="form1" action="">
+				<input id="input1" type="number" />
+			</form>
+		</div>
+		
+	</body>
+
+</html>
