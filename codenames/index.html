@@ -167,13 +167,13 @@ $("#game").click(function() {
 
 var timer;
 var longClickDetector = false;
-$(".box").on("mousedown",function(e){
+$(".box").on("mousedown touchstart",function(e){
     timer = setTimeout(function(){
         var box = $(e.target);
         box.toggleClass("good");
         longClickDetector = true;
     },400);
-}).on("mouseup mouseleave",function(){
+}).on("mouseup mouseleave touchend touchcancel",function(){
     clearTimeout(timer);
 });
 
