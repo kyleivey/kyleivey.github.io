@@ -26,10 +26,6 @@ body {
     position: relative;
 }
 
-.box:hover {
-    background-color: #f7faff;
-}
-
 .good {
     background-color: darkgreen !important;
 }
@@ -40,17 +36,31 @@ body {
   border-color: darkgreen;
 }
 
-.green:hover {
-    background-color: #e9ffe8;
-}
-
 .black {
     background-color: #ff9b9d;
     border-color: red;
 }
 
-.black:hover {
+@media (hover: hover) {
+    .black:hover {
+        background-color: #ffaaac;
+    }
+    .green:hover {
+        background-color: #e9ffe8;
+    }
+    .box:hover {
+        background-color: #f7faff;
+    }
+}
+
+.black:active {
     background-color: #ffaaac;
+}
+.green:active {
+    background-color: #e9ffe8;
+}
+.box:active {
+    background-color: #f7faff;
 }
 
 .token {
@@ -83,7 +93,7 @@ body {
 </style>
     <title>Codenames Duet Grid Generator</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/css/kube.min.css" integrity="sha256-Az61WFtkbo/P92H8CRttXjlodhTsZZD7Oln7WtwKVX4=" crossorigin="anonymous" />
 </head>
 
@@ -186,7 +196,7 @@ $(".box").on("mousedown touchstart",function(e){
         box.toggleClass("good");
         longClickDetector = true;
     },400);
-}).on("mouseup mouseleave touchend touchcancel",function(){
+}).on("mouseup mouseleave touchend touchcancel touchmove",function(){
     clearTimeout(timer);
 });
 
