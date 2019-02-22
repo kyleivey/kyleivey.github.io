@@ -4,35 +4,69 @@
 <head>
 <style>
 body {
-  margin: 40px;
+  margin: 10px;
 }
 
 .wrapper {
   display: grid;
-  grid-template-columns: 55px 55px 55px 55px 55px;
+  grid-template-columns: 95px 95px 95px 95px 95px;
   grid-gap: 10px;
-  color: #444;
+  color: #333;
+  user-select: none;
 }
 
 .box {
-  background-color: lightgray;
+  background-color: #eaecef;
   border-color: black;
   border-style: solid;
-  border-width: thin;
+  border-width: 1px;
   border-radius: 5px;
-  padding: 20px;
+  height: 60px;
+  line-height: 60px;
+  font-size: 0.8em;
+  text-align: center;
+  position: relative;s
 }
 
+.good {
+    background-color: darkgreen !important;
+}
 
 .green {
-  background-color: green;
+  background-color: #dfffdb;
   border-color: darkgreen;
 }
 
 .black {
-  background-color: black;
-  border-color: grey;
+  background-color: #ff9b9d;
+  border-color: red;
 }
+
+.token {
+    border-radius: 10px;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    pointer-events:none;
+}
+
+.token-right {
+    right: 0px;
+    background-color: darkgrey;
+}
+
+.token-bottom {
+    bottom: 0px;
+    background-color: darkgrey;
+}
+
+.text {
+    position: absolute;
+    width:100%;
+    pointer-events:none;
+}
+
+
 </style>
     <title>Codenames Duet Grid Generator</title>
     <meta charset="utf-8">
@@ -41,33 +75,33 @@ body {
 </head>
 
 <body onload='javascript:main();'>
-    <h4>Codenames Duet Key Card Generator</h4>
+    <h4>Secret Words - Duo</h4>
     <div class="wrapper">
-        <div class='box' id='0'></div>
-        <div class='box' id='1'></div>
-        <div class='box' id='2'></div>
-        <div class='box' id='3'></div>
-        <div class='box' id='4'></div>
-        <div class='box' id='5'></div>
-        <div class='box' id='6'></div>
-        <div class='box' id='7'></div>
-        <div class='box' id='8'></div>
-        <div class='box' id='9'></div>
-        <div class='box' id='10'></div>
-        <div class='box' id='11'></div>
-        <div class='box' id='12'></div>
-        <div class='box' id='13'></div>
-        <div class='box' id='14'></div>
-        <div class='box' id='15'></div>
-        <div class='box' id='16'></div>
-        <div class='box' id='17'></div>
-        <div class='box' id='18'></div>
-        <div class='box' id='19'></div>
-        <div class='box' id='20'></div>
-        <div class='box' id='21'></div>
-        <div class='box' id='22'></div>
-        <div class='box' id='23'></div>
-        <div class='box' id='24'></div>
+        <div class='box' id='0'><div class='text'>ASD</div><div class='token'></div></div>
+        <div class='box' id='1'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='2'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='3'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='4'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='5'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='6'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='7'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='8'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='9'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='10'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='11'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='12'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='13'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='14'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='15'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='16'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='17'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='18'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='19'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='20'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='21'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='22'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='23'><div class='text'></div><div class='token'></div></div>
+        <div class='box' id='24'><div class='text'></div><div class='token'></div></div>
     </div>
     <br />
     <div class="row gutters auto">
@@ -85,7 +119,10 @@ body {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/js/kube.min.js"></script>
     <script type="text/javascript">
+var ALL_WORDS = ["AFRICA","AGENT","AIR","ALIEN","ALPS","AMAZON","AMBULANCE","AMERICA","ANGEL","ANTARCTICA","APPLE","ARM","ATLANTIS","AUSTRALIA","AZTEC","BACK","BALL","BAND","BANK","BAR","BARK","BAT","BATTERY","BEACH","BEAR","BEAT","BED","BEIJING","BELL","BELT","BERLIN","BERMUDA","BERRY","BILL","BLOCK","BOARD","BOLT","BOMB","BOND","BOOM","BOOT","BOTTLE","BOW","BOX","BRIDGE","BRUSH","BUCK","BUFFALO","BUG","BUGLE","BUTTON","CALF","CANADA","CAP","CAPITAL","CAR","CARD","CARROT","CASINO","CAST","CAT","CELL","CENTAUR","CENTER","CHAIR","CHANGE","CHARGE","CHECK","CHEST","CHICK","CHINA","CHOCOLATE","CHURCH","CIRCLE","CLIFF","CLOAK","CLUB","CODE","COLD","COMIC","COMPOUND","CONCERT","CONDUCTOR","CONTRACT","COOK","COPPER","COTTON","COURT","COVER","CRANE","CRASH","CRICKET","CROSS","CROWN","CYCLE","CZECH","DANCE","DATE","DAY","DEATH","DECK","DEGREE","DIAMOND","DICE","DINOSAUR","DISEASE","DOCTOR","DOG","DRAFT","DRAGON","DRESS","DRILL","DROP","DUCK","DWARF","EAGLE","EGYPT","EMBASSY","ENGINE","ENGLAND","EUROPE","EYE","FACE","FAIR","FALL","FAN","FENCE","FIELD","FIGHTER","FIGURE","FILE","FILM","FIRE","FISH","FLUTE","FLY","FOOT","FORCE","FOREST","FORK","FRANCE","GAME","GAS","GENIUS","GERMANY","GHOST","GIANT","GLASS","GLOVE","GOLD","GRACE","GRASS","GREECE","GREEN","GROUND","HAM","HAND","HAWK","HEAD","HEART","HELICOPTER","HIMALAYAS","HOLE","HOLLYWOOD","HONEY","HOOD","HOOK","HORN","HORSE","HORSESHOE","HOSPITAL","HOTEL","ICE","ICE CREAM","INDIA","IRON","IVORY","JACK","JAM","JET","JUPITER","KANGAROO","KETCHUP","KEY","KID","KING","KIWI","KNIFE","KNIGHT","LAB","LAP","LASER","LAWYER","LEAD","LEMON","LEPRECHAUN","LIFE","LIGHT","LIMOUSINE","LINE","LINK","LION","LITTER","LOCH NESS","LOCK","LOG","LONDON","LUCK","MAIL","MAMMOTH","MAPLE","MARBLE","MARCH","MASS","MATCH","MERCURY","MEXICO","MICROSCOPE","MILLIONAIRE","MINE","MINT","MISSILE","MODEL","MOLE","MOON","MOSCOW","MOUNT","MOUSE","MOUTH","MUG","NAIL","NEEDLE","NET","NEW YORK","NIGHT","NINJA","NOTE","NOVEL","NURSE","NUT","OCTOPUS","OIL","OLIVE","OLYMPUS","OPERA","ORANGE","ORGAN","PALM","PAN","PANTS","PAPER","PARACHUTE","PARK","PART","PASS","PASTE","PENGUIN","PHOENIX","PIANO","PIE","PILOT","PIN","PIPE","PIRATE","PISTOL","PIT","PITCH","PLANE","PLASTIC","PLATE","PLATYPUS","PLAY","PLOT","POINT","POISON","POLE","POLICE","POOL","PORT","POST","POUND","PRESS","PRINCESS","PUMPKIN","PUPIL","PYRAMID","QUEEN","RABBIT","RACKET","RAY","REVOLUTION","RING","ROBIN","ROBOT","ROCK","ROME","ROOT","ROSE","ROULETTE","ROUND","ROW","RULER","SATELLITE","SATURN","SCALE","SCHOOL","SCIENTIST","SCORPION","SCREEN","SCUBA DIVER","SEAL","SERVER","SHADOW","SHAKESPEARE","SHARK","SHIP","SHOE","SHOP","SHOT","SINK","SKYSCRAPER","SLIP","SLUG","SMUGGLER","SNOW","SNOWMAN","SOCK","SOLDIER","SOUL","SOUND","SPACE","SPELL","SPIDER","SPIKE","SPINE","SPOT","SPRING","SPY","SQUARE","STADIUM","STAFF","STAR","STATE","STICK","STOCK","STRAW","STREAM","STRIKE","STRING","SUB","SUIT","SUPERHERO","SWING","SWITCH","TABLE","TABLET","TAG","TAIL","TAP","TEACHER","TELESCOPE","TEMPLE","THEATER","THIEF","THUMB","TICK","TIE","TIME","TOKYO","TOOTH","TORCH","TOWER","TRACK","TRAIN","TRIANGLE","TRIP","TRUNK","TUBE","TURKEY","UNDERTAKER","UNICORN","VACUUM","VAN","VET","WAKE","WALL","WAR","WASHER","WASHINGTON","WATCH","WATER","WAVE","WEB","WELL","WHALE","WHIP","WIND","WITCH","WORM","YARD"];
+
 var sideA, sideB;
+var wordsA, wordsB;
 var seed = Math.floor(Math.random() * 999);
 
 function main() {
@@ -100,13 +137,15 @@ function init() {
     $('#game').text('#' + seed);
     sideA = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
     sideB = mirrorCard(sideA);
+    wordsA = randomWords(ALL_WORDS, 25);
+    wordsB = wordsA.slice().reverse();
 }
 
 $("#flipA").click(function() {
     if ($("#flipB").hasClass("invisible"))
         clearCard();
     else
-        drawCard(sideA);
+        drawCard(sideA, wordsA);
     $("#flipB").toggleClass("invisible");
 });
 
@@ -114,7 +153,7 @@ $("#flipB").click(function() {
     if ($("#flipA").hasClass("invisible"))
         clearCard();
     else
-        drawCard(sideB);
+        drawCard(sideB, wordsB);
     $("#flipA").toggleClass("invisible");
 });
 
@@ -123,7 +162,34 @@ $("#game").click(function() {
     if (isNumeric(newValue)) {
         seed = newValue;
         init();
-        drawCard(sideB);
+    }
+});
+
+var timer;
+var longClickDetector = false;
+$(".box").on("mousedown",function(e){
+    timer = setTimeout(function(){
+        var box = $(e.target);
+        box.toggleClass("good");
+        longClickDetector = true;
+    },400);
+}).on("mouseup mouseleave",function(){
+    clearTimeout(timer);
+});
+
+$(".box").click(function(e) {
+    if (longClickDetector) {
+        longClickDetector = false;
+        return;
+    }
+    var box = $(e.target);
+    var token = box.children(".token").first();
+    if (token.hasClass("token-right token-bottom")) {
+        token.removeClass("token-bottom");
+    } else if (token.hasClass("token-right")) {
+        token.removeClass("token-right");
+    } else {
+        token.addClass("token-right token-bottom");
     }
 });
 
@@ -135,6 +201,26 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function randomWords(words, count) {
+    if (words.length < count) {
+        return;
+    }
+    var array = [];
+    for (var i = 0; i < count; i++) {
+        var word;
+        do {
+            word = randomElement(words);
+        } while(array.includes(word));
+        array.push(word);
+    }
+    return array;
+}
+
+function randomElement(array) {
+    var i = Math.floor(random() * (array.length));
+    return array[i];
 }
 
 function mirrorCard(arr) {
@@ -150,17 +236,22 @@ function mirrorCard(arr) {
 
 function clearCard() {
     for (var i = 0; i < 25; i++) {
-        $('#' + i).removeClass();
-        $('#' + i).addClass("box");
+        var box = $('#' + i);
+        // box.removeClass();
+        // box.addClass("box");
+        box.children("text").text("");
     }
 }
 
-function drawCard(arr) {
+function drawCard(arr, words) {
     clearCard();
     for (var i = 0; i < 9; i++)
         $('#' + arr[i]).addClass('green');
     for (var i = 9; i < 12; i++)
         $('#' + arr[i]).addClass('black');
+    for (var i = 0; i < 25; i++) {
+        $('#' + i).children(".text").text(words[i]);
+    }
 }
 
 function shuffle(array) {
