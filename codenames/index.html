@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+body {
+  margin: 40px;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 55px 55px 55px 55px 55px;
+  grid-gap: 10px;
+  color: #444;
+}
+
+.box {
+  background-color: lightgray;
+  border-color: black;
+  border-style: solid;
+  border-width: thin;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+
+.green {
+  background-color: green;
+  border-color: darkgreen;
+}
+
+.black {
+  background-color: black;
+  border-color: grey;
+}
+</style>
+    <title>Codenames Duet Grid Generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/css/kube.min.css" integrity="sha256-Az61WFtkbo/P92H8CRttXjlodhTsZZD7Oln7WtwKVX4=" crossorigin="anonymous" />
+</head>
+
+<body onload='javascript:main();'>
+    <h4>Codenames Duet Key Card Generator</h4>
+    <div class="wrapper">
+        <div class='box' id='0'></div>
+        <div class='box' id='1'></div>
+        <div class='box' id='2'></div>
+        <div class='box' id='3'></div>
+        <div class='box' id='4'></div>
+        <div class='box' id='5'></div>
+        <div class='box' id='6'></div>
+        <div class='box' id='7'></div>
+        <div class='box' id='8'></div>
+        <div class='box' id='9'></div>
+        <div class='box' id='10'></div>
+        <div class='box' id='11'></div>
+        <div class='box' id='12'></div>
+        <div class='box' id='13'></div>
+        <div class='box' id='14'></div>
+        <div class='box' id='15'></div>
+        <div class='box' id='16'></div>
+        <div class='box' id='17'></div>
+        <div class='box' id='18'></div>
+        <div class='box' id='19'></div>
+        <div class='box' id='20'></div>
+        <div class='box' id='21'></div>
+        <div class='box' id='22'></div>
+        <div class='box' id='23'></div>
+        <div class='box' id='24'></div>
+    </div>
+    <br />
+    <div class="row gutters auto">
+        <div class='col'>
+            <button id='flipA' class="button outline">Side A</button>
+            <button id='game' class='button outline secondary'>#</button>
+            <button id='flipB' class="button outline">Side B</button>
+        </div>
+    </div>
+    <br />
+    <div class="row gutters auto">
+        <div class='col'>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/js/kube.min.js"></script>
+    <script type="text/javascript">
+var sideA, sideB;
+var seed = Math.floor(Math.random() * 999);
+
+function main() {
+    var id = getParameterByName('id');
+    if (id != null)
+        seed = id;
+    $('#keyid').text(seed);
+    init();
+}
+
+function init() {
+    $('#game').text('#' + seed);
+    sideA = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
+    sideB = mirrorCard(sideA);
+}
+
+$("#flipA").click(function() {
+    if ($("#flipB").hasClass("invisible"))
+        clearCard();
+    else
+        drawCard(sideA);
+    $("#flipB").toggleClass("invisible");
+});
+
+$("#flipB").click(function() {
+    if ($("#flipA").hasClass("invisible"))
+        clearCard();
+    else
+        drawCard(sideB);
+    $("#flipA").toggleClass("invisible");
+});
+
+$("#game").click(function() {
+    var newValue = prompt("Enter the card # shown on a different device");
+    if (isNumeric(newValue)) {
+        seed = newValue;
+        init();
+        drawCard(sideB);
+    }
+});
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function mirrorCard(arr) {
+    var otherSide = new Array(25);
+    for (var i = 0; i < 25; i++)
+        otherSide[i] = 24 - arr[i];
+    otherSide[10] = otherSide[0];
+    for (var i = 11; i < 17; i++)
+        otherSide[i - 11] = otherSide[i];
+    otherSide[11] = otherSide[18];
+    return otherSide;
+}
+
+function clearCard() {
+    for (var i = 0; i < 25; i++) {
+        $('#' + i).removeClass();
+        $('#' + i).addClass("box");
+    }
+}
+
+function drawCard(arr) {
+    clearCard();
+    for (var i = 0; i < 9; i++)
+        $('#' + arr[i]).addClass('green');
+    for (var i = 9; i < 12; i++)
+        $('#' + arr[i]).addClass('black');
+}
+
+function shuffle(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+// a seedable randomization function
+function random() {
+    var x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+}
+
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+</script>
+</body>
+
+</html>
