@@ -10,36 +10,47 @@ body {
 .wrapper {
   display: grid;
   grid-template-columns: 95px 95px 95px 95px 95px;
-  grid-gap: 10px;
-  color: #333;
+  grid-gap: 10px; 
   user-select: none;
 }
 
 .box {
-  background-color: #eaecef;
-  border-color: black;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 5px;
-  height: 60px;
-  line-height: 60px;
-  font-size: 0.8em;
-  text-align: center;
-  position: relative;s
+    background-color: #eaecef;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    position: relative;
+}
+
+.box:hover {
+    background-color: #f7faff;
 }
 
 .good {
     background-color: darkgreen !important;
 }
 
+
 .green {
   background-color: #dfffdb;
   border-color: darkgreen;
 }
 
+.green:hover {
+    background-color: #e9ffe8;
+}
+
 .black {
-  background-color: #ff9b9d;
-  border-color: red;
+    background-color: #ff9b9d;
+    border-color: red;
+}
+
+.black:hover {
+    background-color: #ffaaac;
 }
 
 .token {
@@ -64,20 +75,22 @@ body {
     position: absolute;
     width:100%;
     pointer-events:none;
+    font-size: 0.8em;
+    font-weight:bold;
 }
 
 
 </style>
     <title>Codenames Duet Grid Generator</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/kube/6.5.2/css/kube.min.css" integrity="sha256-Az61WFtkbo/P92H8CRttXjlodhTsZZD7Oln7WtwKVX4=" crossorigin="anonymous" />
 </head>
 
 <body onload='javascript:main();'>
     <h4>Secret Words - Duo</h4>
     <div class="wrapper">
-        <div class='box' id='0'><div class='text'>ASD</div><div class='token'></div></div>
+        <div class='box' id='0'><div class='text'></div><div class='token'></div></div>
         <div class='box' id='1'><div class='text'></div><div class='token'></div></div>
         <div class='box' id='2'><div class='text'></div><div class='token'></div></div>
         <div class='box' id='3'><div class='text'></div><div class='token'></div></div>
@@ -237,18 +250,21 @@ function mirrorCard(arr) {
 function clearCard() {
     for (var i = 0; i < 25; i++) {
         var box = $('#' + i);
-        // box.removeClass();
-        // box.addClass("box");
-        box.children("text").text("");
+        box.removeClass();
+        box.addClass("box");
+        box.children(".text").text("");
+        box.children(".token").removeClass("token-right token-bottom");
     }
 }
 
 function drawCard(arr, words) {
     clearCard();
-    for (var i = 0; i < 9; i++)
+    for (var i = 0; i < 9; i++) {
         $('#' + arr[i]).addClass('green');
-    for (var i = 9; i < 12; i++)
+    }
+    for (var i = 9; i < 12; i++) {
         $('#' + arr[i]).addClass('black');
+    }
     for (var i = 0; i < 25; i++) {
         $('#' + i).children(".text").text(words[i]);
     }
